@@ -1,0 +1,145 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="ngx-timeline">
+
+    <!-- ═══ HEADER ROW ═══════════════════════════════════════════════════════ -->
+    <div class="ngx-timeline__header-row">
+
+      <!-- Corner cell -->
+      <div class="ngx-timeline__corner" [style.width.px]="resourceColumnWidth" [style.min-width.px]="resourceColumnWidth">
+        <span class="ngx-timeline__corner-label">Resources</span>
+      </div>
+
+      <!-- Slot headers (scrollLeft synced via JS) -->
+      <div class="ngx-timeline__slots-header" #slotGroupsHeader>
+        <div class="ngx-timeline__slots-header-inner" [style.width.px]="vm.totalGridWidth">
+
+          <!-- Row 1: group labels (e.g. Month names / Day names) -->
+          <div class="ngx-timeline__group-row">
+            <div
+              *ngFor="let group of vm.slotGroups; trackBy: trackBySlotGroup"
+              class="ngx-timeline__group-cell"
+              [style.width.px]="group.colSpan * vm.slotWidth">
+              {{ group.label }}
+            </div>
+          </div>
+
+          <!-- Row 2: individual slot labels -->
+          <div class="ngx-timeline__slot-row">
+            <div
+              *ngFor="let slot of vm.slots; trackBy: trackBySlot"
+              class="ngx-timeline__slot-cell ngx-timeline__slot-cell--header"
+              [class.ngx-timeline__slot-cell--weekend]="slot.isWeekend"
+              [class.ngx-timeline__slot-cell--today]="slot.isToday"
+              [style.width.px]="vm.slotWidth">
+              {{ slot.label }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BODY ROW ════════════════════════════════════════════════════════ -->
+    <div class="ngx-timeline__body">
+
+      <!-- Left: Resource list (scrollTop synced via JS, no independent scroll) -->
+      <div
+        class="ngx-timeline__resource-list"
+        [style.width.px]="resourceColumnWidth"
+        [style.min-width.px]="resourceColumnWidth"
+        #resourceList>
+        <div
+          *ngFor="let resource of vm.resources; trackBy: trackByResource"
+          class="ngx-timeline__resource-row"
+          [style.height.px]="rowHeight">
+          <ng-container *ngIf="resourceTemplate; else defaultResource">
+            <ng-template
+              [ngTemplateOutlet]="resourceTemplate"
+              [ngTemplateOutletContext]="{ $implicit: resource }">
+            </ng-template>
+          </ng-container>
+          <ng-template #defaultResource>
+            <div class="ngx-timeline__resource-label">
+              <span
+                *ngIf="resource.color"
+                class="ngx-timeline__resource-dot"
+                [style.background-color]="resource.color">
+              </span>
+              <span class="ngx-timeline__resource-name">{{ resource.title }}</span>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Right: Scrollable event grid (drives scroll sync) -->
+      <div class="ngx-timeline__grid" #mainGrid (scroll)="onGridScroll($event)">
+        <div class="ngx-timeline__grid-inner" [style.width.px]="vm.totalGridWidth">
+
+          <!-- One row per resource -->
+          <div
+            *ngFor="let resource of vm.resources; trackBy: trackByResource"
+            class="ngx-timeline__grid-row"
+            [style.height.px]="rowHeight">
+
+            <!-- Background column cells (creates the grid lines) -->
+            <div
+              *ngFor="let slot of vm.slots; trackBy: trackBySlot"
+              class="ngx-timeline__slot-cell"
+              [class.ngx-timeline__slot-cell--weekend]="slot.isWeekend"
+              [class.ngx-timeline__slot-cell--today]="slot.isToday"
+              [style.width.px]="vm.slotWidth"
+              (click)="onCellClick(slot, resource)">
+            </div>
+
+            <!-- Event blocks (absolutely positioned inside the row) -->
+            <div
+              *ngFor="let block of getEventBlocks(resource.id, vm); trackBy: trackByBlock"
+              class="ngx-timeline__event"
+              [class.ngx-timeline__event--dragging]="isDragging(block.event.id)"
+              [class.ngx-timeline__event--resizing]="isResizing(block.event.id)"
+              [ngStyle]="getEventStyle(block)"
+              [ngxDraggable]="block.event.id"
+              [dragEnabled]="block.event.draggable !== false"
+              (dragStart)="onDragStart($event, resource.id, block, vm)"
+              (dragMove)="onDragMove($event, vm)"
+              (dragEnd)="onDragEnd($event, vm)"
+              [ngxResizable]="block.event.id"
+              [resizeEnabled]="block.event.resizable !== false"
+              resizeEdge="end"
+              (resizeStart)="onResizeStart($event, block)"
+              (resizeMove)="onResizeMove($event, vm)"
+              (resizeEnd)="onResizeEnd($event)"
+              (click)="onEventClick(block, $event)">
+
+              <ng-container *ngIf="eventTemplate; else defaultEvent">
+                <ng-template
+                  [ngTemplateOutlet]="eventTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: block.event, block: block }">
+                </ng-template>
+              </ng-container>
+              <ng-template #defaultEvent>
+                <div class="ngx-timeline__event-inner">
+                  <span class="ngx-timeline__event-title">{{ block.event.title }}</span>
+                </div>
+              </ng-template>
+
+            </div><!-- /event -->
+
+          </div><!-- /grid-row -->
+
+          <!-- Drag shadow placeholder -->
+          <div
+            *ngIf="dragPlaceholder$ | async as ph"
+            class="ngx-timeline__drag-placeholder"
+            [style.left.px]="ph.left"
+            [style.top.px]="ph.top"
+            [style.width.px]="ph.width"
+            [style.height.px]="ph.height">
+          </div>
+
+        </div><!-- /grid-inner -->
+      </div><!-- /grid -->
+
+    </div><!-- /body -->
+  </div><!-- /ngx-timeline -->
+</ng-container>

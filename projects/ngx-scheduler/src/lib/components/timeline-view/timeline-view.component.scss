@@ -1,0 +1,247 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13px;
+  color: #374151;
+}
+
+.ngx-timeline {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  &__header-row {
+    display: flex;
+    flex-shrink: 0;
+    border-bottom: 2px solid #cbd5e0;
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  &__corner {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 6px 12px;
+    border-right: 2px solid #cbd5e0;
+    background: #f8fafc;
+    position: sticky;
+    left: 0;
+    z-index: 30;
+  }
+
+  &__corner-label {
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  &__slots-header {
+    flex: 1;
+    overflow: hidden; // scrollLeft is driven by JS only
+  }
+
+  &__slots-header-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__group-row,
+  &__slot-row {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  &__group-cell {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    font-weight: 600;
+    font-size: 11px;
+    color: #475569;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #f8fafc;
+  }
+
+  &__slot-cell--header {
+    flex-shrink: 0;
+    padding: 3px 6px;
+    font-size: 11px;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+
+  // ── Body ──────────────────────────────────────────────────────────────────
+  &__body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  &__resource-list {
+    flex-shrink: 0;
+    overflow: hidden; // scrollTop driven by JS
+    border-right: 2px solid #cbd5e0;
+    background: #f8fafc;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+  }
+
+  &__resource-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 8px 0 12px;
+    box-sizing: border-box;
+
+    &:hover { background: #f1f5f9; }
+  }
+
+  &__resource-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  &__resource-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__resource-name {
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ── Grid ──────────────────────────────────────────────────────────────────
+  &__grid {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+
+    &::-webkit-scrollbar { width: 8px; height: 8px; }
+    &::-webkit-scrollbar-track  { background: #f1f5f9; }
+    &::-webkit-scrollbar-thumb  { background: #cbd5e0; border-radius: 4px; }
+    &::-webkit-scrollbar-corner { background: #f1f5f9; }
+  }
+
+  &__grid-inner {
+    position: relative;
+    min-height: 100%;
+  }
+
+  &__grid-row {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid #e2e8f0;
+    box-sizing: border-box;
+
+    &:hover { background: rgba(241, 245, 249, 0.4); }
+  }
+
+  // Background grid cells
+  &__slot-cell {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border-right: 1px solid #e2e8f0;
+    cursor: pointer;
+
+    &--weekend { background: rgba(254, 243, 199, 0.25); }
+    &--today   { background: rgba(219, 234, 254, 0.35); }
+  }
+
+  // ── Events ────────────────────────────────────────────────────────────────
+  &__event {
+    position: absolute;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    padding: 0 6px;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.15s ease, opacity 0.15s ease;
+
+    &:hover {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+      z-index: 100 !important;
+    }
+
+    &--dragging {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    &--resizing {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &__event-inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__event-title {
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
+  // ── Drag placeholder ──────────────────────────────────────────────────────
+  &__drag-placeholder {
+    position: absolute;
+    box-sizing: border-box;
+    background: rgba(59, 130, 246, 0.12);
+    border: 2px dashed #3b82f6;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 500;
+    transition: top 0.05s ease, left 0.05s ease;
+  }
+}
+
+// Weekend / Today column tints (header slots)
+.ngx-timeline__slot-cell--weekend.ngx-timeline__slot-cell--header {
+  background: #fefce8;
+  color: #92400e;
+}
+.ngx-timeline__slot-cell--today.ngx-timeline__slot-cell--header {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+}

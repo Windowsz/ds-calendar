@@ -1,0 +1,47 @@
+<div class="ngx-scheduler-shell">
+
+  <!-- Toolbar / Header – store handles view-switching internally -->
+  <ngx-scheduler-header [viewOptions]="headerViews"></ngx-scheduler-header>
+
+  <!-- View container -->
+  <div class="ngx-scheduler-view">
+
+    <!-- ─── Resource Timeline (Day / Week / Month) ──────────────────────────── -->
+    <ngx-timeline-view
+      *ngIf="isTimelineView"
+      [slotWidth]="store.snapshot.config.slotWidth"
+      [rowHeight]="store.snapshot.config.rowHeight"
+      [resourceColumnWidth]="store.snapshot.config.resourceColumnWidth"
+      [snapMinutes]="store.snapshot.config.snapMinutes"
+      [locale]="store.snapshot.config.locale"
+      [eventTemplate]="eventTemplate"
+      [resourceTemplate]="resourceTemplate"
+      (eventClick)="onEventClick($event)"
+      (eventDrop)="onEventDrop($event)"
+      (eventResize)="onEventResize($event)"
+      (dateClick)="onDateClick($event)">
+    </ngx-timeline-view>
+
+    <!-- ─── Month Calendar Grid ─────────────────────────────────────────────── -->
+    <ngx-calendar-view
+      *ngIf="isCalendarView"
+      [locale]="store.snapshot.config.locale"
+      [eventTemplate]="eventTemplate"
+      (eventClick)="onEventClick($event)"
+      (dateClick)="onDateClick($event)">
+    </ngx-calendar-view>
+
+    <!-- ─── Day / Week Time Grid ────────────────────────────────────────────── -->
+    <ngx-time-grid-view
+      *ngIf="isTimeGridView"
+      [hourHeightPx]="60"
+      [firstHour]="store.snapshot.config.firstHour"
+      [lastHour]="store.snapshot.config.lastHour"
+      [locale]="store.snapshot.config.locale"
+      [eventTemplate]="eventTemplate"
+      (eventClick)="onEventClick($event)"
+      (dateClick)="onDateClick($event)">
+    </ngx-time-grid-view>
+
+  </div>
+</div>

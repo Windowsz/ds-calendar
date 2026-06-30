@@ -1,0 +1,148 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13px;
+}
+
+.ngx-calendar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+
+  &__weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 2px solid #cbd5e0;
+    background: #f8fafc;
+    flex-shrink: 0;
+  }
+
+  &__weekday-cell {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  &__week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+    min-height: 100px;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #e2e8f0;
+    }
+  }
+
+  &__day-cell {
+    padding: 4px;
+    border-right: 1px solid #e2e8f0;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.1s ease;
+    display: flex;
+    flex-direction: column;
+
+    &:last-child { border-right: none; }
+
+    &:hover { background: #f8fafc; }
+
+    &--today .ngx-calendar__day-number-inner {
+      background: #3b82f6;
+      color: #ffffff;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &--weekend { background: rgba(254, 243, 199, 0.15); }
+
+    &--other-month {
+      background: #fafafa;
+
+      .ngx-calendar__day-number { color: #b0b7c3; }
+    }
+  }
+
+  &__day-number {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    line-height: 1;
+  }
+
+  &__day-number-inner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+  }
+
+  &__events {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  &__event {
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    transition: opacity 0.1s ease;
+
+    &:hover { opacity: 0.85; }
+  }
+
+  &__event-title {
+    pointer-events: none;
+  }
+
+  &__more-btn {
+    background: none;
+    border: none;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6366f1;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 3px;
+
+    &:hover {
+      background: #e0e7ff;
+    }
+  }
+}

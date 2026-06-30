@@ -1,0 +1,73 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="ngx-calendar">
+
+    <!-- Week day headers -->
+    <div class="ngx-calendar__weekday-row" role="row">
+      <div
+        *ngFor="let label of vm.weekDayLabels; trackBy: trackByWeek"
+        class="ngx-calendar__weekday-cell"
+        role="columnheader"
+        [attr.aria-label]="label">
+        {{ label }}
+      </div>
+    </div>
+
+    <!-- Month grid -->
+    <div class="ngx-calendar__grid">
+      <div
+        *ngFor="let week of vm.weeks; trackBy: trackByWeek; let wi = index"
+        class="ngx-calendar__week-row"
+        role="row">
+
+        <div
+          *ngFor="let cell of week; trackBy: trackByCell"
+          class="ngx-calendar__day-cell"
+          [class.ngx-calendar__day-cell--today]="cell.isToday"
+          [class.ngx-calendar__day-cell--weekend]="cell.isWeekend"
+          [class.ngx-calendar__day-cell--other-month]="!cell.isCurrentMonth"
+          role="gridcell"
+          [attr.aria-label]="cell.date | date:'longDate'"
+          (click)="onDateClick(cell)">
+
+          <!-- Day number -->
+          <div class="ngx-calendar__day-number">
+            <span class="ngx-calendar__day-number-inner">{{ cell.date.getDate() }}</span>
+          </div>
+
+          <!-- Events -->
+          <div class="ngx-calendar__events">
+            <ng-container *ngFor="let event of getVisibleEvents(cell); trackBy: trackByEvent">
+              <ng-container *ngIf="eventTemplate; else defaultCellEvent">
+                <ng-template
+                  [ngTemplateOutlet]="eventTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: event }">
+                </ng-template>
+              </ng-container>
+              <ng-template #defaultCellEvent>
+                <div
+                  class="ngx-calendar__event"
+                  [style.background-color]="getEventColor(event)"
+                  [style.color]="event.textColor || '#ffffff'"
+                  (click)="onEventClick(event, $event)"
+                  [title]="event.title">
+                  <span class="ngx-calendar__event-title">{{ event.title }}</span>
+                </div>
+              </ng-template>
+            </ng-container>
+
+            <!-- +N more -->
+            <button
+              *ngIf="getHiddenCount(cell) > 0"
+              class="ngx-calendar__more-btn"
+              type="button"
+              (click)="onMoreClick(cell, $event)">
+              +{{ getHiddenCount(cell) }} more
+            </button>
+          </div>
+
+        </div><!-- /day-cell -->
+      </div><!-- /week-row -->
+    </div><!-- /grid -->
+
+  </div>
+</ng-container>

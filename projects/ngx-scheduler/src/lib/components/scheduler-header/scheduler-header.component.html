@@ -1,0 +1,31 @@
+<div class="ngx-header">
+  <!-- Navigation controls -->
+  <div class="ngx-header__nav">
+    <button class="ngx-btn ngx-btn--today" type="button" (click)="onToday()">Today</button>
+    <button class="ngx-btn ngx-btn--icon" type="button" aria-label="Previous" (click)="onPrev()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M10.354 3.646a.5.5 0 0 1 0 .708L6.707 8l3.647 3.646a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0z"/>
+      </svg>
+    </button>
+    <button class="ngx-btn ngx-btn--icon" type="button" aria-label="Next" (click)="onNext()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M5.646 3.646a.5.5 0 0 0 0 .708L9.293 8 5.646 11.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Title -->
+  <h2 class="ngx-header__title" aria-live="polite">{{ title }}</h2>
+
+  <!-- View switcher -->
+  <div class="ngx-header__views" role="group" aria-label="Calendar view">
+    <button
+      *ngFor="let opt of viewOptions; trackBy: trackByViewOption"
+      class="ngx-btn ngx-btn--view"
+      [class.ngx-btn--active]="activeView === opt.type"
+      type="button"
+      (click)="onViewSelect(opt.type)">
+      {{ opt.label }}
+    </button>
+  </div>
+</div>

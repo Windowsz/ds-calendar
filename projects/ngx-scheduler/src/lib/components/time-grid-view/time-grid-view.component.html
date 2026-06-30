@@ -1,0 +1,78 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="ngx-timegrid">
+
+    <!-- Column headers -->
+    <div class="ngx-timegrid__header">
+      <div class="ngx-timegrid__gutter-header"></div>
+      <div
+        *ngFor="let col of vm.columns; trackBy: trackByColumn"
+        class="ngx-timegrid__col-header"
+        [class.ngx-timegrid__col-header--today]="col.isToday"
+        [class.ngx-timegrid__col-header--weekend]="col.isWeekend">
+        {{ col.label }}
+      </div>
+    </div>
+
+    <!-- Scrollable body -->
+    <div class="ngx-timegrid__body">
+
+      <!-- Hour gutter -->
+      <div class="ngx-timegrid__gutter">
+        <div
+          *ngFor="let hour of vm.hourSlots; trackBy: trackByHour"
+          class="ngx-timegrid__hour-label"
+          [style.height.px]="vm.hourHeightPx">
+          {{ formatHour(hour) }}
+        </div>
+      </div>
+
+      <!-- Columns -->
+      <div
+        *ngFor="let col of vm.columns; trackBy: trackByColumn"
+        class="ngx-timegrid__column"
+        [class.ngx-timegrid__column--today]="col.isToday"
+        [class.ngx-timegrid__column--weekend]="col.isWeekend"
+        [style.height.px]="vm.containerHeightPx"
+        (click)="onColumnClick(col, $event.offsetY, vm)">
+
+        <!-- Hour grid lines -->
+        <div
+          *ngFor="let hour of vm.hourSlots; trackBy: trackByHour"
+          class="ngx-timegrid__hour-slot"
+          [style.height.px]="vm.hourHeightPx">
+        </div>
+
+        <!-- Current time indicator (today only) -->
+        <div
+          *ngIf="col.isToday"
+          class="ngx-timegrid__now-line"
+          [style.top.px]="getCurrentTimeTop(vm)">
+          <div class="ngx-timegrid__now-dot"></div>
+        </div>
+
+        <!-- Event blocks -->
+        <div
+          *ngFor="let block of getEventBlocks(col, vm); trackBy: trackByBlock"
+          class="ngx-timegrid__event"
+          [ngStyle]="getEventStyle(block, vm)"
+          (click)="onEventClick(block.event, $event)">
+          <ng-container *ngIf="eventTemplate; else defaultEvent">
+            <ng-template
+              [ngTemplateOutlet]="eventTemplate"
+              [ngTemplateOutletContext]="{ $implicit: block.event, block: block }">
+            </ng-template>
+          </ng-container>
+          <ng-template #defaultEvent>
+            <div class="ngx-timegrid__event-inner">
+              <span class="ngx-timegrid__event-title">{{ block.event.title }}</span>
+              <span class="ngx-timegrid__event-time">
+                {{ block.event.start | date:'HH:mm' }} – {{ block.event.end | date:'HH:mm' }}
+              </span>
+            </div>
+          </ng-template>
+        </div>
+
+      </div><!-- /column -->
+    </div><!-- /body -->
+  </div>
+</ng-container>
